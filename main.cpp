@@ -9,6 +9,9 @@ struct MARSH // ќбъ€вл€ем структуру MARSH
 	int NUMER;	// данные берутьс€ из стандартного потока ввода stdin (консоль)
 };
 
+MARSH sort_increase(MARSH TRAFIC[], int arraylength);
+
+
 void add_route(MARSH TRAFIC[], int arraylength) // ‘ункци€ дл€ добавлени€  данный в массив маршрутов, с последующей сортировкой
 {
 	std::cout << "¬ведите с клавиатуры информации дл€ заполнени€ массива " << std::endl; // разобратиьс€ с описанием (передать на вывод данные обработчику ввода вывода)
@@ -23,34 +26,26 @@ void add_route(MARSH TRAFIC[], int arraylength) // ‘ункци€ дл€ добавлени€  данны
 		std::cin >> TRAFIC[i].TERM;
 	}
 
-	TRAFIC[arraylength] = ((sort_increase(TRAFIC, arraylength)));
-
-}
-
-
-MARSH sort_increase(MARSH TRAFIC[], int arraylength) // ‘ункци€ дл€ сортировки элементво массива методом "пузырков"
-{
-	int i;
 	int r;
 	MARSH arr_temp;
 
 	for (i = 0; i < unsigned(arraylength); i++)
 	{
-	
-		for (r = 0; r < unsigned(arraylength); r++) 
+
+		for (r = 0; r < unsigned(arraylength); r++)
 		{
-			// ќбмен местами по принципу более легкий 
-			if (TRAFIC[r].NUMER > TRAFIC[r+1].NUMER)
-			{ 
-				arr_temp = TRAFIC[r+1];
+			// ќбмен местами по принципу более т€желый элемент перемещаем вправо
+			if (TRAFIC[r].NUMER > TRAFIC[r + 1].NUMER)
+			{
+				arr_temp = TRAFIC[r + 1];
 				TRAFIC[r + 1] = TRAFIC[r];
 				TRAFIC[r] = arr_temp;
 			}
 		}
 	}
-	return TRAFIC[arraylength];
 
 }
+
 
 int lineSearch(MARSH TRAFIC[], int requiredKey, int arraylength)			//линейный поиск
 {
@@ -107,7 +102,6 @@ int main (void)						// ќбъ€вл€ем главную функцию котора€ возвращает целое число
 	const int arraylength = 8;
 	MARSH TRAFIC[arraylength];
 	//Ѕлок объ€влени€ переменных
-
 	setlocale(LC_ALL, "rus");		// установка вывода локации
 	add_route(TRAFIC, arraylength); // вызов метода (функции), передача переменных в качестве входных параметров
 	show_one_route(TRAFIC, arraylength);
