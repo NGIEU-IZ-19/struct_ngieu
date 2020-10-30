@@ -1,54 +1,57 @@
 //Блок подключения библиотек перед выполнением программы
-#include <iostream> //Подключение библиотеки iostream для ввода вывода информации
-#include <string> //Подключение библиотеки string работы со строковыми данными
+#include <iostream>																		//Подключение библиотеки iostream для ввода вывода информации, из стандартного потока ввода/вывода stdin/stdout (консоль)
+#include <string>																		//Подключение библиотеки string работы со строковыми данными
+#include <Windows.h>																	
 
-struct MARSH // Объявляем структуру MARSH 
+struct MARSH																					// Объявляем структуру  MARSH 
 {
-	std::string BEGST; 
-	std::string TERM;
-	int NUMER;	// данные беруться из стандартного потока ввода stdin (консоль)
+	std::string BEGST;																			// Переменная начального пункта маршрута, тип строковой с вводимыми данными  из стандартного потока ввода stdin (консоль)
+	std::string TERM;																			// Переменная конечного пункта маршрута, тип строковой с вводимыми данными  из стандартного потока ввода stdin (консоль)
+	int NUMER;																					// Переменная номера маршрута, тип строковой с вводимыми данными  из стандартного потока ввода stdin (консоль)
 };
 
-bool has_only_digits(const std::string check_number) {
-	return check_number.find_first_not_of("0123456789") == std::string::npos; // std::string::npos - до конца строки
+bool has_only_digits(const std::string check_number)											// Объявление функции проверки введенного значения, возвращает TRUE если введеное значение число.
+{
+	return check_number.find_first_not_of("0123456789") == std::string::npos;					// Используем метод find_first_not_of() (Ищет в строке первый символ, который не соответствует ни одному из символов, указанных в его аргументах), 
+																								// std::string::npos означает выполнение до конца строки.
 }
 
-void add_route(MARSH TRAFIC[], int arraylength) // Функция для добавления  данный в массив маршрутов, с последующей сортировкой
+void add_route(MARSH TRAFIC[], int arraylength)													// Функция для добавления данных в массив TRAFIC, с последующей сортировкой по возрастанию.
 {
 	int i;
 	std::string check_number;
-	std::cout << "Введите с клавиатуры информации для заполнения массива " << std::endl; // разобратиься с описанием (передать на вывод данные обработчику ввода вывода)
-	for (i = 0; i < unsigned(arraylength); i++)
+	std::cout << "Введите с клавиатуры информации для заполнения массива " << std::endl;		// Передача данных с переходом на след. строку в стандартный поток вывода stdout
+	for (i = 0; i < unsigned(arraylength); i++)													// Объявляем цикл FOR с четчиком, с последовательного заполнения элементво массива TRAFIC
 	{
-		do
+		do																						// Объявляем цикл WHILE который выполняем до тех пор,
 		{
-			std::cout << "Номер маршрута (положительное целое число): ";
+			std::cout << "Номер маршрута (положительное целое число): ";						// пока функция has_only_digits не выдаст значениe FALSE.
 			std::cin >> check_number;
 			has_only_digits(check_number);
 		} 
 		while (has_only_digits(check_number)==false);
 
-		TRAFIC[i].NUMER = atoi(check_number.c_str());
+		TRAFIC[i].NUMER = atoi(check_number.c_str());											// Присваиваем числовое значение  из стандартного потока ввода элементу TRAFIC[i].NUMER.
 		std::cout << "Название начального пункта маршрута: ";
 		std::cin >> TRAFIC[i].BEGST;
 		std::cout << "Название конечного пункта маршрута: "; 
 		std::cin >> TRAFIC[i].TERM;
 	}
-
+																								// После заполнения массива приступаем к его сортировке
 	int r;
-	MARSH arr_temp;
+	MARSH arr_temp;																				// Объявляем дополнительныую переменную для временного хранения элемента на период замены другим в массиве TRAFIC.
 
-	for (i = 0; i < unsigned(arraylength); i++)
+	for (i = 0; i < unsigned(arraylength); i++)													// Каждый элемент сравниваем со всеми элементами находящимся правее в массиве
 	{
 
 		for (r = 0; r < unsigned(arraylength); r++)
 		{
-			// Обмен местами по принципу более тяжелый элемент перемещаем вправо
-			if (TRAFIC[r].NUMER > TRAFIC[r + 1].NUMER)
+																								// Обмен местами элементов в массиве производим по принципу "более тяжелый левый элемент перемещаем вправо, взамен правого элемента"
+			if (TRAFIC[r].NUMER > TRAFIC[r + 1].NUMER)					
 			{
-				arr_temp = TRAFIC[r + 1];
-				TRAFIC[r + 1] = TRAFIC[r];
-				TRAFIC[r] = arr_temp;
+				arr_temp = TRAFIC[r + 1];														// Временное хранение элемента для последуйщего переноса влево в массиве.
+				TRAFIC[r + 1] = TRAFIC[r];														// Двигает по массиву более тяжелый элемент влево, присваиванием значения правого элемента значением левого элемента.
+				TRAFIC[r] = arr_temp;															// Из временной переменной присваиваем значение левому элементу. 
 			}
 		}
 	}
@@ -56,32 +59,32 @@ void add_route(MARSH TRAFIC[], int arraylength) // Функция для добавления  данны
 }
 
 
-int lineSearch(MARSH TRAFIC[], int requiredKey, int arraylength)			//линейный поиск
+ int lineSearch(MARSH TRAFIC[], int requiredKey, int arraylength)								// Функция для поиска в массиве TRAFIC совпадения по номеру маршрута, возвращаем логическую переменную.
 {
-		for (int i = 0; i < arraylength; i++)
+		for (int i = 0; i < arraylength; i++)													// Сравниваем каждый элемент массива TRAFIC с введеным значением.
 		{
 			if (TRAFIC[i].NUMER == requiredKey)
-				return i ;
+				return i ;																		// Если они равны возвращаем нмоер элемента в массиве.
 		}
-		return 0;
+		return 0;																				// Если они неравны возвращаем 0.
 }
 
-void show_one_route(MARSH TRAFIC[], int arraylength) // Функция не возвращающая значений для просмотра определенного маршрута
+void show_one_route(MARSH TRAFIC[], int arraylength)											// Функция (не возвращающая значений) для просмотра определенного маршрута из массива TRAFIC
 {
 
 	int requiredKey;
-	std::cout << "Введите с клавиатуры номер маршрута для просмотра: "; // разобратиься с описанием (передать на вывод данные обработчику ввода вывода)
+	std::cout << "Введите с клавиатуры номер маршрута для просмотра: "; 
 	std::cin >> requiredKey;
 
-	int m = (lineSearch(TRAFIC, requiredKey, arraylength));
+	int m = (lineSearch(TRAFIC, requiredKey, arraylength));										// Вызов функции lineSearch с передачей параметров 
 
 	if (m == 0)
 	{
-		std::cout << "Маршрут отсутствует в массиве" << std::endl;
+		std::cout << "Маршрут отсутствует в массиве" << std::endl;								
 	}
 	else 
 	{ 
-		std::cout << "Данные по вашему запросу:" << std::endl;
+		std::cout << "Данные по вашему запросу:" << std::endl;									// Если маршрут найден, выводиться информация о данном маршруте.
 		std::cout << "Номер маршрута" << TRAFIC[m].NUMER << std::endl;
 		std::cout << "Название начального пункта маршрута: " << TRAFIC[m].BEGST << std::endl;
 		std::cout << "Название конечного пункта маршрута: " << TRAFIC[m].TERM << std::endl;
@@ -89,9 +92,9 @@ void show_one_route(MARSH TRAFIC[], int arraylength) // Функция не возвращающая 
 }
 
 
-void show_full_route(MARSH TRAFIC[], int arraylength) // Функция не возвращающая значений для просмотра определенного маршрута
+void show_full_route(MARSH TRAFIC[], int arraylength)											// Функция (не возвращающая значений) для просмотра всех маршрутов из массива TRAFIC, проверки сортировки в массиве.
 {
-
+	std::cout << "Вывод полного массива маршрутов" << std::endl;
 	int i;
 	for (i = 0; i < unsigned(arraylength); i++)
 	{
@@ -102,18 +105,17 @@ void show_full_route(MARSH TRAFIC[], int arraylength) // Функция не возвращающая
 
 }
 
-int main (void)						// Объявляем главную функцию которая возвращает целое число при выполнении (?)
+int main (void)																					// Объявляем главную функцию (возвращает 0 при удачном выполении - сигнал для выхода из программы)
 {
-	//Блок объявления переменных
+																								// Блок объявления переменных
 	const int arraylength = 8;
 	MARSH TRAFIC[arraylength];
-	//Блок объявления переменных
-	setlocale(LC_ALL, "rus");		// установка вывода локации
-	add_route(TRAFIC, arraylength); // вызов метода (функции), передача переменных в качестве входных параметров
-	std::cout << "Выполним поиск маршрута" << std::endl;
-	show_one_route(TRAFIC, arraylength);
-	std::cout << "Вывод полного массива маршрутов" << std::endl;
-	show_full_route(TRAFIC, arraylength);
-	system("pause");				// остановка выполнения программы
-	return 0;						//  вывод  
+																								// Блок объявления переменных
+	SetConsoleCP(1251);																			// Установка кодировки поддерживающей русский язык для стандартного потока ввода stdin (консоль)
+	SetConsoleOutputCP(1251);																	// Установка кодировки поддерживающей русский язык для стандартного потока вывода stdout (консоль)
+	add_route(TRAFIC, arraylength);																// Вызов функции  add_route с парметрами
+	show_one_route(TRAFIC, arraylength);														// Вызов функции  show_one_route с парметрами
+	show_full_route(TRAFIC, arraylength);														// Вызов функции  show_one_route с парметрами
+	system("pause");																			// Остановка выполнения программы
+	return 0;																					// Выход из программы, если она удачно выполнена 
 }
